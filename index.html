@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="no">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Beat for Beat Spill</title>
+    <style>
+        body {
+            font-family: 'Brush Script MT', cursive;
+            text-align: center;
+            margin: 0;
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: flex-start; /* Flytt elementene høyere opp */
+            align-items: center;
+            background-image: url('img/disco.jpg');
+            background-size: cover;
+            background-position: center;
+            padding-top: 50px; /* Juster denne verdien for å flytte elementene høyere opp */
+        }
+        .container {
+            margin-top: 100px; /* Øk marginen for å gi mer plass mellom elementene */
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            flex-wrap: wrap;
+        }
+        .box {
+            display: inline-block;
+            width: 240px; /* Dobbelt så bred */
+            height: 150px; /* Dobbelt så høy */
+            margin: 20px; /* Øk marginen for å gi mer plass mellom boksene */
+            font-size: 40px; /* Dobbelt så stor tekst */
+            font-weight: bold;
+            line-height: 150px; /* Juster for å sentrere teksten vertikalt */
+            text-align: center;
+            background-color: rgb(239, 209, 237);
+            cursor: pointer;
+            border-radius: 5px;
+            box-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+        }
+        .title {
+            color: rgb(255, 140, 224);
+            font-size: 80px;
+            font-weight: bold;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+        }
+        input[type="text"] {
+            font-size: 32px; /* Dobbelt så stor tekst */
+            width: 80%; /* Juster bredden etter behov */
+            padding: 10px; /* Øk padding for å gjøre feltet større */
+        }
+
+        button {
+            font-size: 32px; /* Dobbelt så stor tekst */
+            padding: 10px 20px; /* Øk padding for å gjøre knappen større */
+            margin-top: 20px; /* Øk marginen for å gi mer plass mellom elementene */
+        }
+        #refreshButton {
+            position: fixed; /* Plasser knappen fast i forhold til vinduet */
+            bottom: 20px; /* Plasser den 20px fra bunnen */
+            right: 20px; /* Plasser den 20px fra høyre */
+            font-size: 16px; /* Gjør teksten mindre */
+            padding: 5px 10px; /* Gjør knappen mindre */
+            background-color: #ff00bb; /* Legg til en tydelig bakgrunnsfarge */
+            color: white; /* Gjør teksten hvit */
+            border: none; /* Fjern kantlinjen */
+            border-radius: 5px; /* Gjør hjørnene avrundet */
+            cursor: pointer; /* Endre musepekeren til en hånd */
+            box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.3); /* Legg til en skygge */
+        }
+
+        #refreshButton:hover {
+            background-color: #960076; /* Endre fargen ved hover */
+        }
+
+        
+    </style>
+</head>
+<body>
+    <h1 class="title">Tone for Thone</h1>
+    <input type="text" id="sentenceInput" placeholder="Skriv en setning med 5 ord" size="40">
+    <button onclick="startGame()">Start</button>
+    <div class="container" id="gameContainer"></div>
+    <button id="refreshButton" onclick="refreshGame()" style="display: none;">Start på nytt</button>
+
+    <script>
+        let words = [];
+        let colors = [];
+
+        function startGame() {
+            let sentence = document.getElementById("sentenceInput").value.trim();
+            words = sentence.split(" ");
+            
+            if (words.length !== 5) {
+                alert("Setningen må inneholde nøyaktig 5 ord!");
+                return;
+            }
+            
+            colors = shuffle(["red", "red", "green", "green", "green"]);
+            
+            let gameContainer = document.getElementById("gameContainer");
+            gameContainer.innerHTML = "";
+            
+            for (let i = 0; i < 5; i++) {
+                let box = document.createElement("div");
+                box.className = "box";
+                box.innerText = i + 1;
+                box.setAttribute("data-index", i);
+                box.onclick = revealWord;
+                gameContainer.appendChild(box);
+            }
+
+            // Skjul innfyllingsfeltet og startknappen
+            document.getElementById("sentenceInput").style.display = "none";
+            document.querySelector("button").style.display = "none";
+
+            // Vis refresh-knappen
+            document.getElementById("refreshButton").style.display = "inline-block";
+        }
+
+        function refreshGame() {
+            // Tilbakestill spillet
+            document.getElementById("sentenceInput").value = "";
+            document.getElementById("sentenceInput").style.display = "inline-block";
+            document.querySelector("button[onclick='startGame()']").style.display = "inline-block";
+            document.getElementById("gameContainer").innerHTML = "";
+            document.getElementById("refreshButton").style.display = "none";
+        }
+
+        function revealWord() {
+            let index = this.getAttribute("data-index");
+            this.innerText = words[index];
+            this.style.backgroundColor = colors[index];
+            this.style.color = "white";
+            this.style.cursor = "default";
+            this.onclick = null;
+        }
+
+        function shuffle(array) {
+            for (let i = array.length - 1; i > 0; i--) {
+                let j = Math.floor(Math.random() * (i + 1));
+                [array[i], array[j]] = [array[j], array[i]];
+            }
+            return array;
+        }
+    </script>
+</body>
+</html>
